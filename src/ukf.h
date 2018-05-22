@@ -64,13 +64,16 @@ public:
   ///* Augmented state dimension
   int n_aug_;
 
+  ///* Sigma points dimension
+  int n_sig_;
+
   ///* Sigma point spreading parameter
   double lambda_;
 
   ///* NIS Radar
   double NIS_radar_;
 
-  ///* NIS Lidar
+  ///* NIS Laser
   double NIS_lidar_;
 
   ///* Radar measurement noise covariance matrix
@@ -78,6 +81,12 @@ public:
     
   ///* Lidar measurement noise covariance matrix
   MatrixXd R_lidar_;
+
+  //Generate sigma points:
+  MatrixXd GenerateSigmaPoints(VectorXd x, MatrixXd P, double lambda, int n_sig);
+
+  //Predits sigma points.
+  MatrixXd PredictSigmaPoints(MatrixXd Xsig, double delta_t, int n_x, int n_sig, double nu_am, double nu_yawdd);
 
   /**
    * Constructor
@@ -119,6 +128,9 @@ public:
    * @param meas_package The measurement at k+1
    */
   void updateUKF(MatrixXd Zsig, int n_z, MeasurementPackage meas_package);
+
+  // Normalized the component `index` of the vector `vector` to be inside [-M_PI, M_PI] interval.
+  void NormalizeAngle(VectorXd vector, int index);
 };
 
 #endif /* UKF_H */
